@@ -6,7 +6,7 @@ setup(
     version='0.1.1',
     author='Xuanyi Chew',
     author_email='chewxy@gmail.com',
-    packages=['zeroFactory', 'test'],
+    packages=['zeroFactory'],
     license='LICENSE.txt',
     description='App factory for zeroMQ apps',
     long_description=open('README.txt').read(),
