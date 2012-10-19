@@ -99,7 +99,7 @@ class App():
                 except RequiredKeysMissing as e:  # damn, you passed in bad request
                     errorData = {'message': messageUnpacked}
                     messageID = self._getMessageID(messageUnpacked)
-                    errorDict = self.error(-32600, e, errorData, messageID)
+                    errorDict = self.error(-32600, e.strerror, errorData, messageID)
 
                     self.reply(errorDict)
                     
@@ -107,7 +107,7 @@ class App():
                     continue
 
                 except UnknownMessageType as e:
-                    errorDict = self.error(-32700, e)
+                    errorDict = self.error(-32700, e.strerror)
                     self.reply(errorDict)
                     
                     # TO DO: LOGGING!
@@ -119,7 +119,7 @@ class App():
                 except KeyError as e:  # method not found in the route
                     errorData = {'message': messageUnpacked}
                     messageID = self._getMessageID(messageUnpacked)
-                    errorDict = self.error(-32601, e, data, messageID)
+                    errorDict = self.error(-32601, e.strerror, data, messageID)
 
                     self.reply(errorDict)
                     
@@ -132,7 +132,7 @@ class App():
                 except KeyError as e:  # this means params are not in message
                     errorData = {'message': messageUnpacked}
                     messageID = self._getMessageID(messageUnpacked)
-                    errorDict = self.error(-32602, e, data, messageID)
+                    errorDict = self.error(-32602, e.strerror, data, messageID)
 
                     self.reply(errorDict)
 
