@@ -97,7 +97,7 @@ class App():
                 try:
                     message = validateJSONRPCMessage(messageUnpacked)
                 except RequiredKeysMissing as e:  # damn, you passed in bad request
-                    errorData = {'message': message}
+                    errorData = {'message': messageUnpacked}
                     messageID = self._getMessageID(message)
                     errorDict = self.error(-32600, e, errorData, messageID)
 
@@ -117,8 +117,8 @@ class App():
                 try:
                     method = getattr(currentModule, self.routes[message['method']])
                 except KeyError as e:  # method not found in the route
-                    errorData = {'message': message}
-                    messageID = self._getMessageID(message)
+                    errorData = {'message': messageUnpacked}
+                    messageID = self._getMessageID(messageUnpacked)
                     errorDict = self.error(-32601, e, data, messageID)
 
                     self.reply(errorDict)
@@ -130,8 +130,8 @@ class App():
                 try:
                     result = method(message['params'])
                 except KeyError as e:  # this means params are not in message
-                    errorData = {'message': message}
-                    messageID = self._getMessageID(message)
+                    errorData = {'message': messageUnpacked}
+                    messageID = self._getMessageID(messageUnpacked)
                     errorDict = self.error(-32602, e, data, messageID)
 
                     self.reply(errorDict)
