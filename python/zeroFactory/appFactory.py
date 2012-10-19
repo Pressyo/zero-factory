@@ -52,17 +52,17 @@ class App():
         elif socketType == 'pull':
             self.socket = self.context.socket(zmq.PULL)
 
+        if not routes or not currentModule:
+            errorString = '''
+                            Routes AND Current Module are REQUIRED.
+                            '''
+            raise Exception(errorString)
+
         if bind:
             self.socket.bind(bind)  # bind address from config
         else:
             errorString = '''Bind address required.
                             It is in this format: transport://adress:port
-                            '''
-            raise Exception(errorString)
-
-        if not routes or not currentModule:
-            errorString = '''
-                            Routes AND Current Module are REQUIRED.
                             '''
             raise Exception(errorString)
 
@@ -79,46 +79,50 @@ class App():
                         },
                     "id": ___
         '''
-        while True:
-            rawMessage = self.socket.recv()
-            
-            try:
-                messageUnpacked = self.messageDevice.loads(rawMessage)
-            except (ValueError, IndexError):  # this is to say assuming the default pickle/json devices don't work
-                messageUnpacked = msgpack.unpackb(rawMessage)
+        try:
+            while True:
+                rawMessage = self.socket.recv()
+                
+                try:
+                    messageUnpacked = self.messageDevice.loads(rawMessage)
+                except (ValueError, IndexError):  # this is to say assuming the default pickle/json devices don't work
+                    messageUnpacked = msgpack.unpackb(rawMessage)
 
-            # ok, so you unpacked the message... now validate it
-            try:
-                message = validateJSONRPCMessage(messageUnpacked)
-            except RequiredKeysMissing:  # damn, you passed in bad json
-                # TO DO: LOGGING!
-                continue  # what should be done: log, and continue
+                # ok, so you unpacked the message... now validate it
+                try:
+                    message = validateJSONRPCMessage(messageUnpacked)
+                except RequiredKeysMissing:  # damn, you passed in bad json
+                    # TO DO: LOGGING!
+                    continue  # what should be done: log, and continue
 
-            # congrats! the message validated without errors
-            try:
-                method = getattr(currentModule, self.routes[message['method']])
-            except KeyError:  # method not found in the route
-                # TO DO: LOGGING!
-                continue  # what should be done: log, and continue
+                # congrats! the message validated without errors
+                try:
+                    method = getattr(currentModule, self.routes[message['method']])
+                except KeyError:  # method not found in the route
+                    # TO DO: LOGGING!
+                    continue  # what should be done: log, and continue
 
-            # great! you found the method. Now call it!
-            try:
-                result = method(message['params'])
-            except KeyError:  # this means params are not in message
-                # TO DO: LOGGING!
-                continue  # what should be done: log, and continue
-            
-            if result:
-                if self.socketType == 'rep':
-                    pass
-                    # TO DO: reply the goddamn data
+                # great! you found the method. Now call it!
+                try:
+                    result = method(message['params'])
+                except KeyError:  # this means params are not in message
+                    # TO DO: LOGGING!
+                    continue  # what should be done: log, and continue
+                
+                if result:
+                    if self.socketType == 'rep':
+                        pass
+                        # TO DO: reply the goddamn data
+                    else:
+                        pass  # all is good if a result was replied
                 else:
-                    pass  # all is good if a result was replied
-            else:
-                # TO DO: LOGGING!
-                continue  # what should be done: log, and continue
+                    # TO DO: LOGGING!
+                    continue  # what should be done: log, and continue
 
-    def close():
+        finally:
+            self.close()
+
+    def close(self):
         '''
             To undo any bindings if necessary
         '''
