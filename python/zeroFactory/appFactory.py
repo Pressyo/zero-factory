@@ -15,7 +15,9 @@ from jsonRPCWrapper import *
 from exceptions import *
 
 class App():
+    
     __slots__ = ['routes', 'currentModule', 'socketType', 'bind', 'format']
+
     def __init__(self, routes=None, currentModule=None,
                 socketType='rep', bind=None, format='msgpack'):
         '''
@@ -39,11 +41,11 @@ class App():
 
         # format of the messages. Defaults to msgpack
         if self.format == 'json':
-            self.messageDevice = json
+            self.serializer = json
         elif self.format == 'pickle':
-            self.messageDevice = pickle
+            self.serializer = pickle
         elif self.format == 'msgpack':
-            self.messageDevice = msgpack
+            self.serializer = msgpack
 
         # ZeroMQ
         self.context = zmq.Context()  # zmq Context
@@ -88,10 +90,8 @@ class App():
             while True:
                 rawMessage = self.socket.recv()
                 
-                try:
-                    messageUnpacked = self.messageDevice.loads(rawMessage)
-                except (ValueError, IndexError):  # this is to say assuming the default pickle/json devices don't work
-                    messageUnpacked = msgpack.unpackb(rawMessage)
+                messageUnpacked = self.serializer.loads(rawMessage)
+
 
                 # ok, so you unpacked the message... now validate it
                 try:
@@ -159,10 +159,7 @@ class App():
             And then sends it.
         '''
         # TO DO: verify that d is a dict first
-        try:
-            messagePacked = self.messageDevice.dumps(d)
-        except (ValueError, IndexError):
-            messagePacked = self.messageDevice.packb(d)
+        messagePacked = self.serializer.dumps(d)
         
         try:
             self.socket.send(messagePacked)
