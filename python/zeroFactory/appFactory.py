@@ -12,7 +12,7 @@ sys.path.insert(1, parentdir)  # add current path
 os.chdir(abspath)
 
 from jsonRPCWrapper import *
-
+from exceptions import *
 
 class App():
     __slots__ = ['routes', 'currentModule', 'socketType', 'bind', 'format']
@@ -98,8 +98,9 @@ class App():
                     message = validateJSONRPCMessage(messageUnpacked)
                 except RequiredKeysMissing as e:  # damn, you passed in bad request
                     errorData = {'message': messageUnpacked}
+                    errorMessage = '%s' % e
                     messageID = self._getMessageID(messageUnpacked)
-                    errorDict = self.error(-32600, e.strerror, errorData, messageID)
+                    errorDict = self.error(-32600, errorMessage, errorData, messageID)
 
                     self.reply(errorDict)
                     
@@ -107,7 +108,8 @@ class App():
                     continue
 
                 except UnknownMessageType as e:
-                    errorDict = self.error(-32700, e.strerror)
+                    errorMessage = '%s' % e
+                    errorDict = self.error(-32700, errorMessage)
                     self.reply(errorDict)
                     
                     # TO DO: LOGGING!
@@ -118,8 +120,9 @@ class App():
                     method = getattr(currentModule, self.routes[message['method']])
                 except KeyError as e:  # method not found in the route
                     errorData = {'message': messageUnpacked}
+                    errorMessage = '%s' % e
                     messageID = self._getMessageID(messageUnpacked)
-                    errorDict = self.error(-32601, e.strerror, data, messageID)
+                    errorDict = self.error(-32601, errorMessage, data, messageID)
 
                     self.reply(errorDict)
                     
@@ -131,8 +134,9 @@ class App():
                     result = method(message['params'])
                 except KeyError as e:  # this means params are not in message
                     errorData = {'message': messageUnpacked}
+                    errorMessage = '%s' % e
                     messageID = self._getMessageID(messageUnpacked)
-                    errorDict = self.error(-32602, e.strerror, data, messageID)
+                    errorDict = self.error(-32602, errorMessage, data, messageID)
 
                     self.reply(errorDict)
 
