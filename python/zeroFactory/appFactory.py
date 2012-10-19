@@ -52,18 +52,23 @@ class App():
         elif socketType == 'pull':
             self.socket = self.context.socket(zmq.PULL)
 
+        # check if routes and currentModule exists
         if not routes or not currentModule:
             errorString = '''
                             Routes AND Current Module are REQUIRED.
                             '''
             raise Exception(errorString)
 
-        if bind:
+        try:
             self.socket.bind(bind)  # bind address from config
-        else:
-            errorString = '''Bind address required.
-                            It is in this format: transport://adress:port
-                            '''
+        except zmq.core.error.ZMQError as e:
+            if e.strerror == 'Invalid argument':
+                errorString = '''Bind address format: transport://adress:port'''
+            elif e.strerror == 'Address in use':
+                errorString = '''Binding address in use. Free up address first'''
+            raise Exception(errorString)
+        except TypeError:
+            errorString = 'Bind address is required'
             raise Exception(errorString)
 
     def run(self):
@@ -91,36 +96,95 @@ class App():
                 # ok, so you unpacked the message... now validate it
                 try:
                     message = validateJSONRPCMessage(messageUnpacked)
-                except RequiredKeysMissing:  # damn, you passed in bad json
+                except RequiredKeysMissing as e:  # damn, you passed in bad request
+                    errorData = {'message': message}
+                    messageID = self._getMessageID(message)
+                    errorDict = self.error(-32600, e, errorData, messageID)
+
+                    self.reply(errorDict)
+                    
                     # TO DO: LOGGING!
-                    continue  # what should be done: log, and continue
+                    continue
+
+                except UnknownMessageType as e:
+                    errorDict = self.error(-32700, e)
+                    self.reply(errorDict)
+                    
+                    # TO DO: LOGGING!
+                    continue
 
                 # congrats! the message validated without errors
                 try:
                     method = getattr(currentModule, self.routes[message['method']])
-                except KeyError:  # method not found in the route
+                except KeyError as e:  # method not found in the route
+                    errorData = {'message': message}
+                    messageID = self._getMessageID(message)
+                    errorDict = self.error(-32601, e, data, messageID)
+
+                    self.reply(errorDict)
+                    
                     # TO DO: LOGGING!
-                    continue  # what should be done: log, and continue
+                    continue  
 
                 # great! you found the method. Now call it!
                 try:
                     result = method(message['params'])
-                except KeyError:  # this means params are not in message
+                except KeyError as e:  # this means params are not in message
+                    errorData = {'message': message}
+                    messageID = self._getMessageID(message)
+                    errorDict = self.error(-32602, e, data, messageID)
+
+                    self.reply(errorDict)
+
                     # TO DO: LOGGING!
-                    continue  # what should be done: log, and continue
+                    continue
                 
-                if result:
-                    if self.socketType == 'rep':
-                        pass
-                        # TO DO: reply the goddamn data
-                    else:
-                        pass  # all is good if a result was replied
+                if result:  # result should be a dict
+                    self.reply(result)
+
                 else:
-                    # TO DO: LOGGING!
                     continue  # what should be done: log, and continue
 
         finally:
             self.close()
+
+    def reply(self, d):
+        '''
+            This function takes d, which is a RESPONSE dictionary (either SUCCESS or ERROR),
+            Transforms it nicely into msgpack or whatnots that has been defined in format
+            And then sends it.
+        '''
+        # TO DO: verify that d is a dict first
+        try:
+            messagePacked = self.messageDevice.dumps(d)
+        except (ValueError, IndexError):
+            messagePacked = self.messageDevice.packb(d)
+        
+        try:
+            self.socket.send(messagePacked)
+        except zmq.core.error.ZMQError as e:
+            if e.strerror == 'Operation not supported':  # this is to verify that it is an operation not supported case
+                pass
+
+    def error(self, code, errorMessage, data=None, messageID=-1):
+        '''
+            This function wraps errors. No shit sherlock.
+        '''
+        errorDict = ERRORMESSAGE
+        errorDict['error']['code'] = code  # Invalid Request
+        errorDict['error']['message'] = errorMessage
+        errorDict['error']['data'] = data
+        errorDict['id'] = messageID
+
+        return errorDict
+
+    def _getMessageID(self, message):
+        try:
+            messageID = message['id']
+        except:  # all exceptions! Pokemon! Gotta Catch 'em all
+            messageID = -1
+
+        return messageID
 
     def close(self):
         '''
