@@ -98,7 +98,7 @@ class App():
                     message = validateJSONRPCMessage(messageUnpacked)
                 except RequiredKeysMissing as e:  # damn, you passed in bad request
                     errorData = {'message': messageUnpacked}
-                    messageID = self._getMessageID(message)
+                    messageID = self._getMessageID(messageUnpacked)
                     errorDict = self.error(-32600, e, errorData, messageID)
 
                     self.reply(errorDict)
