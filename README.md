@@ -8,7 +8,7 @@ Good news everybody, you can actually install using pip! This is how you'd do it
 
 ## Deploying without a build server ##
 1. clone the git repo into local system
-2. To install: `sudo pip install -e /path/to/zeroFactory/python/`
+2. To install: `sudo pip install -e /path/to/zeroFactory/python/ZeroFactory-x.y.z.tar.gz`
 3. To use: `from zeroFactory import appFactory`
 4. Usage instructions can be found in the docs
 
