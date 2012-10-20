@@ -3,3 +3,4 @@ v0.1.2, 20/10/2012 -- Updated to have proper error messages
 v0.1.3, 20/10/2012 -- Bugfix  on errorDict
 v0.1.4, 20/10/2012 -- Bugfix  on errorDict - error messages can now be properly serialized
 v0.1.5, 20/10/2012 -- uses proper serializer API for msgpack. Reduces try/except blocks
+v0.1.6, 21/10/2012 -- Major bugfixes: success and error messages are now correct, and there are tests for those now
