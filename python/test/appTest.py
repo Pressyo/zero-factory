@@ -15,12 +15,14 @@ currentModule = sys.modules[__name__]
 # define routes
 routes = {
 		'create': 'createFunc',
-		'retrieve': 'retrieveFunc',
-		'update': 'updateFunc',
-		'delete': 'deleteFunc'
 		}
 
 address = 'tcp://*:1234'
+
+def createFunc(params):
+	d = appFactory.SUCCESSMESSAGE
+	d['result'] = 'createdFunction!'
+	return d
 
 def main():
     app = appFactory.App(routes=routes, currentModule=currentModule,
