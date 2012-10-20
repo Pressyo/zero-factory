@@ -117,12 +117,12 @@ class App():
 
                 # congrats! the message validated without errors
                 try:
-                    method = getattr(currentModule, self.routes[message['method']])
+                    method = getattr(self.currentModule, self.routes[message['method']])
                 except KeyError as e:  # method not found in the route
                     errorData = {'message': messageUnpacked}
-                    errorMessage = '%s' % e
+                    errorMessage = '%s is not a valid method' % e
                     messageID = self._getMessageID(messageUnpacked)
-                    errorDict = self.error(-32601, errorMessage, data, messageID)
+                    errorDict = self.error(-32601, errorMessage, errorData, messageID)
 
                     self.reply(errorDict)
                     
@@ -136,7 +136,7 @@ class App():
                     errorData = {'message': messageUnpacked}
                     errorMessage = '%s' % e
                     messageID = self._getMessageID(messageUnpacked)
-                    errorDict = self.error(-32602, errorMessage, data, messageID)
+                    errorDict = self.error(-32602, errorMessage, errorData, messageID)
 
                     self.reply(errorDict)
 
@@ -144,6 +144,7 @@ class App():
                     continue
                 
                 if result:  # result should be a dict
+                    result['id'] = messageUnpacked['id']
                     self.reply(result)
 
                 else:
