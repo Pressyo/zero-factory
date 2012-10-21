@@ -8,5 +8,5 @@ test/appTest.py
 test/requester.py
 zeroFactory/__init__.py
 zeroFactory/appFactory.py
-zeroFactory/exceptions.py
 zeroFactory/jsonRPCWrapper.py
+zeroFactory/zeroFactoryExceptions.py

@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='ZeroFactory',
-    version='0.1.7',
+    version='0.1.8',
     author='Xuanyi Chew',
     author_email='chewxy@gmail.com',
     packages=['zeroFactory', 'test'],
