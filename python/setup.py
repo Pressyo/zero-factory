@@ -3,15 +3,15 @@ from distutils.core import setup
 
 setup(
     name='ZeroFactory',
-    version='0.1.6',
+    version='0.1.7',
     author='Xuanyi Chew',
     author_email='chewxy@gmail.com',
-    packages=['zeroFactory'],
+    packages=['zeroFactory', 'test'],
     license='LICENSE.txt',
     description='App factory for zeroMQ apps',
     long_description=open('README.txt').read(),
     install_requires=[
-        "pyzmq == 2.2.0",
+        "pyzmq == 2.2.0.1",
         "msgpack-python == 0.2.2"
     ],
 )

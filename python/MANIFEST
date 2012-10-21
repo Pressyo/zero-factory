@@ -3,6 +3,9 @@ CHANGES.txt
 LICENCE.txt
 README.txt
 setup.py
+test/__init__.py
+test/appTest.py
+test/requester.py
 zeroFactory/__init__.py
 zeroFactory/appFactory.py
 zeroFactory/exceptions.py
