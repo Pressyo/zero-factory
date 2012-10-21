@@ -1,7 +1,7 @@
 import msgpack
 import json
 
-from exceptions import *
+from zeroFactoryExceptions import *
 
 SUCCESSMESSAGE = {
     "jsonrpc": "2.0",

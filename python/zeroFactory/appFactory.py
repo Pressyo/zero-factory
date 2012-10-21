@@ -12,7 +12,7 @@ sys.path.insert(1, parentdir)  # add current path
 os.chdir(abspath)
 
 from jsonRPCWrapper import *
-from exceptions import *
+from zeroFactoryExceptions import *
 
 class App():
     
