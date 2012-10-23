@@ -19,14 +19,19 @@ routes = {
 
 address = 'tcp://*:1234'
 
+socketType = sys.argv[1]
+if socketType not in ['pull', 'rep']:
+	raise TypeError('wrong socket type')
+
 def createFunc(params):
 	d = appFactory.SUCCESSMESSAGE
+	print params
 	d['result'] = 'createdFunction!'
 	return d
 
 def main():
     app = appFactory.App(routes=routes, currentModule=currentModule,
-                         bind=address, socketType='rep')
+                         bind=address, socketType=socketType)
     app.run()
 
 

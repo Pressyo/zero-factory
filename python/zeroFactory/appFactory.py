@@ -143,7 +143,7 @@ class App():
                     # TO DO: LOGGING!
                     continue
                 
-                if result:  # result should be a dict
+                if result:  # result should be a dict or None
                     result['id'] = messageUnpacked['id']
                     self.reply(result)
 
@@ -157,7 +157,7 @@ class App():
         '''
             This function takes d, which is a RESPONSE dictionary (either SUCCESS or ERROR),
             Transforms it nicely into msgpack or whatnots that has been defined in format
-            And then sends it.
+            And then sends it. If it needs to be sent
         '''
         # TO DO: verify that d is a dict first
         messagePacked = self.serializer.dumps(d)
@@ -165,7 +165,7 @@ class App():
         try:
             self.socket.send(messagePacked)
         except zmq.core.error.ZMQError as e:
-            if e.strerror == 'Operation not supported':  # this is to verify that it is an operation not supported case
+            if e.strerror == 'Operation not supported':  # This is what is returned if the socket is a PULL
                 pass
 
     def error(self, code, errorMessage, data=None, messageID=-1):
