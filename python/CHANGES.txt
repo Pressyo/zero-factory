@@ -5,4 +5,5 @@ v0.1.4, 20/10/2012 -- Bugfix  on errorDict - error messages can now be properly 
 v0.1.5, 20/10/2012 -- uses proper serializer API for msgpack. Reduces try/except blocks
 v0.1.6, 21/10/2012 -- Major bugfixes: success and error messages are now correct, and there are tests for those now
 v0.1.7, 21/10/2012 -- Updated to support pyzmq 2.2.0.1 which has native greenlet and gevent support. Not sure why yet
-v0.1.8, 21/10/2012 -- Changed exceptions.py into zeroFactoryExceptions.py as it could interfere with the native python module `exceptions`
+v0.1.8, 23/10/2012 -- Changed exceptions.py into zeroFactoryExceptions.py as it could interfere with the native python module `exceptions`
+v0.1.9, 24/10/2012 -- Wrapped up successful results with SUCCESSMESSAGE. Now methods merely have to return a dict of their results.

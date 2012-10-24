@@ -5,7 +5,7 @@ README.txt
 setup.py
 test/__init__.py
 test/appTest.py
-test/requester.py
+test/req-requester.py
 zeroFactory/__init__.py
 zeroFactory/appFactory.py
 zeroFactory/jsonRPCWrapper.py
