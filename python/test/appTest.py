@@ -24,10 +24,7 @@ if socketType not in ['pull', 'rep']:
 	raise TypeError('wrong socket type')
 
 def createFunc(params):
-	d = appFactory.SUCCESSMESSAGE
-	print params
-	d['result'] = 'createdFunction!'
-	return d
+	return 'createdFunction!'
 
 def main():
     app = appFactory.App(routes=routes, currentModule=currentModule,
