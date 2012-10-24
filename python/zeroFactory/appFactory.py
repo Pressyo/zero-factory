@@ -144,8 +144,10 @@ class App():
                     continue
                 
                 if result:  # result should be a dict or None
-                    result['id'] = messageUnpacked['id']
-                    self.reply(result)
+                    wrappedMessage = SUCCESSMESSAGE
+                    wrappedMessage['result'] = result
+                    wrappedMessage['id'] = messageUnpacked['id']
+                    self.reply(wrappedMessage)
 
                 else:
                     continue  # what should be done: log, and continue
