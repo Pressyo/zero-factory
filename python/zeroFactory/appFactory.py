@@ -19,7 +19,7 @@ class App():
     __slots__ = ['routes', 'currentModule', 'socketType', 'bind', 'format']
 
     def __init__(self, routes=None, currentModule=None,
-                socketType='rep', bind=None, format='msgpack'):
+                socketType='rep', bind=None, format='msgpack', verbose=None):
         '''
             routes should be a dict. An example:
                 routes = {
@@ -38,6 +38,7 @@ class App():
         self.currentModule = currentModule  # current module is declared
         self.socketType = socketType  # this is needed for run()
         self.format = format
+        self.verbose = verbose
 
         # format of the messages. Defaults to msgpack
         if self.format == 'json':
@@ -69,7 +70,7 @@ class App():
             elif e.strerror == 'Address in use':
                 errorString = '''Binding address in use. Free up address first'''
             else:
-                errorString = 'General Error. Unknown WTF Happened'
+                errorString = '%s' % e
             raise Exception(errorString)
         except TypeError:
             errorString = 'Bind address is required'
@@ -93,6 +94,8 @@ class App():
                 rawMessage = self.socket.recv()
                 
                 messageUnpacked = self.serializer.loads(rawMessage)
+                if self.verbose:
+                    print 'received %s' % messageUnpacked
 
 
                 # ok, so you unpacked the message... now validate it
@@ -107,6 +110,8 @@ class App():
                     self.reply(errorDict)
                     
                     # TO DO: LOGGING!
+                    # Temporary logging: PRINT!
+                    print '%s' % errorDict
                     continue
 
                 except UnknownMessageType as e:
@@ -115,6 +120,8 @@ class App():
                     self.reply(errorDict)
                     
                     # TO DO: LOGGING!
+                    # Temporary logging: PRINT!
+                    print '%s' % errorDict
                     continue
 
                 # congrats! the message validated without errors
@@ -129,6 +136,8 @@ class App():
                     self.reply(errorDict)
                     
                     # TO DO: LOGGING!
+                    # Temporary logging: PRINT!
+                    print '%s' % errorDict
                     continue  
 
                 # great! you found the method. Now call it!
@@ -143,6 +152,8 @@ class App():
                     self.reply(errorDict)
 
                     # TO DO: LOGGING!
+                    # Temporary logging: PRINT!
+                    print '%s' % errorDict
                     continue
                 
                 if result:  # result should be a dict or None
@@ -150,6 +161,9 @@ class App():
                     wrappedMessage['result'] = result
                     wrappedMessage['id'] = messageUnpacked['id']
                     self.reply(wrappedMessage)
+
+                    if self.verbose:
+                        print 'sent %s' % wrappedMessage
 
                 else:
                     continue  # what should be done: log, and continue
