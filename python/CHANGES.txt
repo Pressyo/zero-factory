@@ -7,3 +7,4 @@ v0.1.6, 21/10/2012 -- Major bugfixes: success and error messages are now correct
 v0.1.7, 21/10/2012 -- Updated to support pyzmq 2.2.0.1 which has native greenlet and gevent support. Not sure why yet
 v0.1.8, 23/10/2012 -- Changed exceptions.py into zeroFactoryExceptions.py as it could interfere with the native python module `exceptions`
 v0.1.9, 24/10/2012 -- Wrapped up successful results with SUCCESSMESSAGE. Now methods merely have to return a dict of their results.
+v0.1.10, 28/10/2012 -- Bug fix on Line 71: UnboundLocalError. Now it should have correct error strings
