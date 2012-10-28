@@ -68,6 +68,8 @@ class App():
                 errorString = '''Bind address format: transport://adress:port'''
             elif e.strerror == 'Address in use':
                 errorString = '''Binding address in use. Free up address first'''
+            else:
+                errorString = 'General Error. Unknown WTF Happened'
             raise Exception(errorString)
         except TypeError:
             errorString = 'Bind address is required'
