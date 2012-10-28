@@ -28,7 +28,7 @@ def createFunc(params):
 
 def main():
     app = appFactory.App(routes=routes, currentModule=currentModule,
-                         bind=address, socketType=socketType)
+                         bind=address, socketType=socketType, verbose=True)
     app.run()
 
 
