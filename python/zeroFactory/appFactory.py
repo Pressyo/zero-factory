@@ -1,6 +1,6 @@
 import sys
 import os
-import zmq
+import zmq.green as zmq
 import json
 import pickle
 import msgpack
@@ -14,8 +14,9 @@ os.chdir(abspath)
 from jsonRPCWrapper import *
 from zeroFactoryExceptions import *
 
+
 class App():
-    
+
     __slots__ = ['routes', 'currentModule', 'socketType', 'bind', 'format']
 
     def __init__(self, routes=None, currentModule=None,
@@ -92,11 +93,10 @@ class App():
         try:
             while True:
                 rawMessage = self.socket.recv()
-                
+
                 messageUnpacked = self.serializer.loads(rawMessage)
                 if self.verbose:
                     print 'received %s' % messageUnpacked
-
 
                 # ok, so you unpacked the message... now validate it
                 try:
@@ -108,7 +108,6 @@ class App():
                     errorDict = self.error(-32600, errorMessage, errorData, messageID)
 
                     self.reply(errorDict)
-                    
                     # TO DO: LOGGING!
                     # Temporary logging: PRINT!
                     print '%s' % errorDict
@@ -118,7 +117,7 @@ class App():
                     errorMessage = '%s' % e
                     errorDict = self.error(-32700, errorMessage)
                     self.reply(errorDict)
-                    
+
                     # TO DO: LOGGING!
                     # Temporary logging: PRINT!
                     print '%s' % errorDict
@@ -134,11 +133,11 @@ class App():
                     errorDict = self.error(-32601, errorMessage, errorData, messageID)
 
                     self.reply(errorDict)
-                    
+
                     # TO DO: LOGGING!
                     # Temporary logging: PRINT!
                     print '%s' % errorDict
-                    continue  
+                    continue
 
                 # great! you found the method. Now call it!
                 try:
@@ -155,7 +154,6 @@ class App():
                     # Temporary logging: PRINT!
                     print '%s' % errorDict
                     continue
-                
                 if result:  # result should be a dict or None
                     wrappedMessage = SUCCESSMESSAGE
                     wrappedMessage['result'] = result
@@ -179,7 +177,7 @@ class App():
         '''
         # TO DO: verify that d is a dict first
         messagePacked = self.serializer.dumps(d)
-        
+
         try:
             self.socket.send(messagePacked)
         except zmq.core.error.ZMQError as e:
@@ -212,4 +210,3 @@ class App():
         '''
         self.socket.close()
         return 'Socket closed'
-
