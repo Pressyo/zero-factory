@@ -60,8 +60,12 @@ class AppWrapper:
         poller = zmq.Poller()
         poller.register(self.socket, zmq.POLLIN)
 
+        try:
+            timeout = timeout * 1000
+        except TypeError:
+            timeout = None
         while True:
-            socks = dict(poller.poll(timeout * 1000))
+            socks = dict(poller.poll(timeout))
             if socks:
                 if socks.get(self.socket) == zmq.POLLIN:
                     return self.recv()
