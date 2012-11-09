@@ -8,5 +8,6 @@ test/appTest.py
 test/req-requester.py
 zeroFactory/__init__.py
 zeroFactory/appFactory.py
+zeroFactory/appWrapper.py
 zeroFactory/jsonRPCWrapper.py
 zeroFactory/zeroFactoryExceptions.py
