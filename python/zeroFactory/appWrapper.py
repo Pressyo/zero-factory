@@ -8,6 +8,13 @@ The nice thing about this client wrapper is that it handles disconnects well.
 It will basically close and reopen the socket if something bad happens.
 '''
 
+JSONRPCMESSAGE = {
+                    "jsonrpc": "2.0",
+                    "method": None,
+                    "params": None,
+                    "id": None
+                }
+
 
 class AppWrapper:
     def __init__(self, context, socketType, addresses):
