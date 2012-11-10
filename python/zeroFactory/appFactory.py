@@ -40,6 +40,7 @@ class App():
         self.socketType = socketType  # this is needed for run()
         self.format = format
         self.verbose = verbose
+        self.bind = bind
 
         # format of the messages. Defaults to msgpack
         if self.format == 'json':
@@ -56,9 +57,9 @@ class App():
                             '''
             raise Exception(errorString)
 
-        self.bind()
+        self._bind()
 
-    def bind(self):
+    def _bind(self):
         # ZeroMQ
         self.context = zmq.Context()  # zmq Context
         if self.socketType == 'rep':
@@ -67,8 +68,8 @@ class App():
             self.socket = self.context.socket(zmq.PULL)
 
         try:
-            self.socket.bind(bind)  # bind address from config
-        except zmq.core.error.ZMQError as e:
+            self.socket.bind(self.bind)  # bind address from config
+        except Exception as e:
             if e.strerror == 'Invalid argument':
                 errorString = '''Bind address format: transport://adress:port'''
             elif e.strerror == 'Address in use':
@@ -168,12 +169,12 @@ class App():
 
                 else:
                     continue  # what should be done: log, and continue
-        except zmq.core.error.ZMQError as e:
+        except Exception as e:
             # this shouldn't happen. You're fucked.
             if self.verbose:
                 print e
             self.close()
-            self.bind()
+            self._bind()
 
         finally:
             self.close()
