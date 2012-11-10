@@ -49,19 +49,22 @@ class App():
         elif self.format == 'msgpack':
             self.serializer = msgpack
 
-        # ZeroMQ
-        self.context = zmq.Context()  # zmq Context
-        if socketType == 'rep':
-            self.socket = self.context.socket(zmq.REP)
-        elif socketType == 'pull':
-            self.socket = self.context.socket(zmq.PULL)
-
         # check if routes and currentModule exists
         if not routes or not currentModule:
             errorString = '''
                             Routes AND Current Module are REQUIRED.
                             '''
             raise Exception(errorString)
+
+        self.bind()
+
+    def bind(self):
+        # ZeroMQ
+        self.context = zmq.Context()  # zmq Context
+        if self.socketType == 'rep':
+            self.socket = self.context.socket(zmq.REP)
+        elif self.socketType == 'pull':
+            self.socket = self.context.socket(zmq.PULL)
 
         try:
             self.socket.bind(bind)  # bind address from config
@@ -165,6 +168,12 @@ class App():
 
                 else:
                     continue  # what should be done: log, and continue
+        except zmq.core.error.ZMQError as e:
+            # this shouldn't happen. You're fucked.
+            if self.verbose:
+                print e
+            self.close()
+            self.bind()
 
         finally:
             self.close()
