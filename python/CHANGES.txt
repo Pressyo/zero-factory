@@ -13,3 +13,4 @@ v0.1.12, 07/11/2012 -- Used zmq.green instead of zmq. This changes the requireme
 v0.1.13, 09/11/2012 -- Added appWrapper. I figure if you provide a factory, might as well provide a standardized client.
 v0.1.14, 09/11/2012 -- Added JSONRPCMESSAGE as a constant in appWrapper for easier and shared access.
 v0.1.15, 10/11/2012 -- Added a method: self.bind(). This makes bad sockets disconnects much easier
+v0.1.16, 10/11/2012 -- Added self.run() to reconnect info as it would have just reconnect, and then not run
