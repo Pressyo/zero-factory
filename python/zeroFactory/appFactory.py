@@ -172,9 +172,10 @@ class App():
         except Exception as e:
             # this shouldn't happen. You're fucked.
             if self.verbose:
-                print e
+                print e, "restarting"
             self.close()
             self._bind()
+            self.run()
 
         finally:
             self.close()
