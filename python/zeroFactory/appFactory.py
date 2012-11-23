@@ -4,6 +4,7 @@ import zmq.green as zmq
 import json
 import pickle
 import msgpack
+import traceback
 
 # fix import and weird WSGI path issues
 abspath = os.path.abspath(os.path.dirname(sys.argv[0]))
@@ -172,7 +173,8 @@ class App():
         except Exception as e:
             # this shouldn't happen. You're fucked.
             if self.verbose:
-                print e, "restarting"
+                print(traceback.format_exc())
+                print("RESTARTING THE APP GRACEFULLY")
             self.close()
             self._bind()
             self.run()
