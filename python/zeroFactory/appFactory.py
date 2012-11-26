@@ -188,9 +188,13 @@ class App():
 
                     if self.verbose:
                         print 'sent %s' % wrappedMessage
-
                 else:
-                    continue  # what should be done: log, and continue
+                    methodCalled = messageUnpacked['method']
+                    errorMessage = 'No results found :('
+                    errorData = {'message': 'No Results found for method %s' % methodCalled}
+                    messageID = self._getMessageID(messageUnpacked)
+                    errorDict = self.error(-32404, errorMessage, errorData, messageID)
+                    self.reply(errorDict)
         except Exception as e:
             # this shouldn't happen. You're fucked.
             if self.verbose:
