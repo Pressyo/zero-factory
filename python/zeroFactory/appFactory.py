@@ -145,6 +145,7 @@ class App():
                     continue
 
                 # great! you found the method. Now call it!
+                result = None  # default for result
                 try:
                     result = method(message['params'])
                 except KeyError as e:  # this means params are not in message
@@ -158,7 +159,27 @@ class App():
                     # TO DO: LOGGING!
                     # Temporary logging: PRINT!
                     print '%s' % errorDict
-                    continue
+                except TypeError as e:
+                    errorData = {'message': messageUnpacked}
+                    errorMessage = '%s' % e
+                    messageID = self._getMessageID(messageUnpacked)
+                    errorDict = self.error(-32602, errorMessage, errorData, messageID)
+                    self.reply(errorDict)
+                except:
+                    print traceback.format_exc()
+                    e = sys.exc_info()
+                    errorType = e[0]
+                    try:
+                        errorMessage = e[1][0]
+                    except IndexError:
+                        errorMessage = e[1]
+
+                    errorData = {'message': messageUnpacked}
+                    errorMessage = '%s : %s' % (errorType, errorMessage)
+                    messageID = self._getMessageID(messageUnpacked)
+                    errorDict = self.error(-32603, errorMessage, errorData, messageID)
+                    self.reply(errorDict)
+
                 if result:  # result should be a dict or None
                     wrappedMessage = SUCCESSMESSAGE
                     wrappedMessage['result'] = result
