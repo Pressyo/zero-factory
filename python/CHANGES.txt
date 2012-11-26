@@ -15,4 +15,5 @@ v0.1.14, 09/11/2012 -- Added JSONRPCMESSAGE as a constant in appWrapper for easi
 v0.1.15, 10/11/2012 -- Added a method: self.bind(). This makes bad sockets disconnects much easier
 v0.1.16, 11/11/2012 -- Added self.run() to reconnect info as it would have just reconnect, and then not run
 v0.1.17, 13/11/2012 -- Changed the verbose error code. Now it will output traceback if verbose.
-v0.1.18, 13/11/2012 -- Added better error handling. Most general errors will now throw error code -32603 and the app will not randomly restart
+v0.1.18, 26/11/2012 -- Added better error handling. Most general errors will now throw error code -32603 and the app will not randomly restart
+v0.1.19, 27/11/2012 -- Added error handling for when no result was found. It will now reply and raise -32404, which is 404 not found
