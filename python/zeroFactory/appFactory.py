@@ -218,9 +218,15 @@ class App():
 
         try:
             self.socket.send(messagePacked)
-        except zmq.core.error.ZMQError as e:
-            if e.strerror == 'Operation not supported':  # This is what is returned if the socket is a PULL
-                pass
+        except:
+            e = sys.exc_info()
+            errorType = e[0]
+            try:
+                errorMessage = e[1][0]
+            except IndexError:
+                errorMessage = e[1]
+            print errorMessage
+            pass
 
     def error(self, code, errorMessage, data=None, messageID=-1):
         '''
