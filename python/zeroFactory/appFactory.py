@@ -184,7 +184,8 @@ class App():
                     wrappedMessage = SUCCESSMESSAGE
                     wrappedMessage['result'] = result
                     wrappedMessage['id'] = messageUnpacked['id']
-                    self.reply(wrappedMessage)
+                    if self.socketType in ['rep']:  # only reply if it's a reply type socket
+                        self.reply(wrappedMessage)
 
                     if self.verbose:
                         print 'sent %s' % wrappedMessage
