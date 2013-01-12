@@ -18,3 +18,4 @@ v0.1.17, 13/11/2012 -- Changed the verbose error code. Now it will output traceb
 v0.1.18, 26/11/2012 -- Added better error handling. Most general errors will now throw error code -32603 and the app will not randomly restart
 v0.1.19, 27/11/2012 -- Added error handling for when no result was found. It will now reply and raise -32404, which is 404 not found
 v0.1.20, 30/11/2012 -- Better error handling. Replaced the old except zmq.core.error.ZMQError handler since that exception no longer exists.
+v0.1.21, 13/01/2013 -- Made it that only 'rep' type sockets are replying. Else it'd stay silent
