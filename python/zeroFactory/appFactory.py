@@ -186,7 +186,7 @@ class App():
                         wrappedMessage = SUCCESSMESSAGE
                         wrappedMessage['result'] = result
                         wrappedMessage['id'] = messageUnpacked['id']
-
+                        self.reply(wrappedMessage)
                         if self.verbose:
                             print 'sent %s' % wrappedMessage
                     else:
