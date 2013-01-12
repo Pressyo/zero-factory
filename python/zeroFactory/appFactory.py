@@ -153,7 +153,7 @@ class App():
                     errorMessage = '%s' % e
                     messageID = self._getMessageID(messageUnpacked)
                     errorDict = self.error(-32602, errorMessage, errorData, messageID)
-
+                    print ('KeyError', e)
                     self.reply(errorDict)
 
                     # TO DO: LOGGING!
@@ -164,6 +164,7 @@ class App():
                     errorMessage = '%s' % e
                     messageID = self._getMessageID(messageUnpacked)
                     errorDict = self.error(-32602, errorMessage, errorData, messageID)
+                    print ('TypeError', e)
                     self.reply(errorDict)
                 except:
                     print traceback.format_exc()
@@ -180,22 +181,21 @@ class App():
                     errorDict = self.error(-32603, errorMessage, errorData, messageID)
                     self.reply(errorDict)
 
-                if result:  # result should be a dict or None
-                    wrappedMessage = SUCCESSMESSAGE
-                    wrappedMessage['result'] = result
-                    wrappedMessage['id'] = messageUnpacked['id']
-                    if self.socketType in ['rep']:  # only reply if it's a reply type socket
-                        self.reply(wrappedMessage)
+                if self.socketType in ['rep']:
+                    if result:  # result should be a dict or None
+                        wrappedMessage = SUCCESSMESSAGE
+                        wrappedMessage['result'] = result
+                        wrappedMessage['id'] = messageUnpacked['id']
 
-                    if self.verbose:
-                        print 'sent %s' % wrappedMessage
-                else:
-                    methodCalled = messageUnpacked['method']
-                    errorMessage = 'No results found :('
-                    errorData = {'message': 'No Results found for method %s' % methodCalled}
-                    messageID = self._getMessageID(messageUnpacked)
-                    errorDict = self.error(-32404, errorMessage, errorData, messageID)
-                    self.reply(errorDict)
+                        if self.verbose:
+                            print 'sent %s' % wrappedMessage
+                    else:
+                        methodCalled = messageUnpacked['method']
+                        errorMessage = 'No results found :('
+                        errorData = {'message': 'No Results found for method %s' % methodCalled}
+                        messageID = self._getMessageID(messageUnpacked)
+                        errorDict = self.error(-32404, errorMessage, errorData, messageID)
+                        self.reply(errorDict)
         except Exception as e:
             # this shouldn't happen. You're fucked.
             if self.verbose:
@@ -216,18 +216,20 @@ class App():
         '''
         # TO DO: verify that d is a dict first
         messagePacked = self.serializer.dumps(d)
-
-        try:
-            self.socket.send(messagePacked)
-        except:
-            e = sys.exc_info()
-            errorType = e[0]
+        if self.socketType in ['rep']:  # only reply if it's a reply type socket
             try:
-                errorMessage = e[1][0]
-            except IndexError:
-                errorMessage = e[1]
-            print errorMessage
-            pass
+                self.socket.send(messagePacked)
+            except:
+                e = sys.exc_info()
+                errorType = e[0]
+                try:
+                    errorMessage = e[1][0]
+                except IndexError:
+                    errorMessage = e[1]
+                print('%s : %s' % (errorType, errorMessage))
+                pass
+        else:
+            print(d)
 
     def error(self, code, errorMessage, data=None, messageID=-1):
         '''
