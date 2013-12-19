@@ -37,3 +37,16 @@ Good news everybody, you can actually install using pip! This is how you'd do it
 # Javascript (node.js) #
 ... stuff here ..
 
+
+#DEVELOPMENT INSTRUCTIONS#
+So you want to help develop zero-factory. Great! We have provided some helpful development tools in this repository as well!
+
+Firstly, fork this repository. This repo consists of `master` and `dev`. The `dev` branch might be helpful for you.
+
+On the `dev` branch, a Vagrantfile as well as the `develop` directory exists to aid in your development. You may of course use your own Vagrant boxes, but the vagrant file is a very close to the expected deploy environment that this was built for. Of course, we're not imposing anything on your own fork. The `dev` branch was provided for your convenience.
+
+##Dev Branch Requirements##
+If you do use the provided dev branch, these are required, at least for the Vagrant box:
+
+* **Vagrant-VBGuest** `vagrant plugin install vagrant-vbguest`. This takes care of any funny guest addition issues.
+* [Daily Cloud Image for 13.10](http://cloud-images.ubuntu.com/vagrant/saucy/current/saucy-server-cloudimg-amd64-vagrant-disk1.box). The title is 1310Daily.
