@@ -1,2 +1,2 @@
-pyzmq
+pyzmq=14.0.14
 msgpack-python
