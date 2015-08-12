@@ -97,6 +97,7 @@ class App():
         '''
         try:
             while True:
+                print "HAY WORLD"
                 rawMessage = self.socket.recv()
 
                 messageUnpacked = self.serializer.loads(rawMessage)

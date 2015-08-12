@@ -14,7 +14,7 @@ REQUEST = {
 def setUp(socketType='req'):
 	context = zmq.Context()
 	socket = context.socket(zmq.REQ)
-	socket.connect('tcp://*:1234')
+	socket.connect('tcp://127.0.0.1:1234')
 	return socket
 
 def send(socket, d, serializer=msgpack):

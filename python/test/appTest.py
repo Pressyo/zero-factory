@@ -17,18 +17,15 @@ routes = {
 		'create': 'createFunc',
 		}
 
-address = 'tcp://*:1234'
+address = 'tcp://127.0.0.1:1234'
 
-socketType = sys.argv[1]
-if socketType not in ['pull', 'rep']:
-	raise TypeError('wrong socket type')
 
 def createFunc(params):
 	return 'createdFunction!'
 
 def main():
     app = appFactory.App(routes=routes, currentModule=currentModule,
-                         bind=address, socketType=socketType, verbose=True)
+                         bind=address, socketType='rep', verbose=True)
     app.run()
 
 
